@@ -13,13 +13,13 @@ datasource db {
 model User {
   id         String   @id @default(uuid())
   name       String
-  cpf        Int
-  cnpj       Int?
+  cpf        BigInt
+  cnpj       BigInt?
   email      String   @unique
   password   String
-  phone      Int?
+  phone      BigInt?
   street     String?
-  number     Int?
+  number     BigInt?
   complement String?
   ativo      Boolean  @default(true)
   role       Role     @default(USER)
@@ -44,7 +44,7 @@ model Expense {
   userId String @map("user_id")
   user   User   @relation(fields: [userId], references: [id])
 
-  categoryId Int
+  categoryId Int       @map("category_id")
   Category   Category? @relation(fields: [categoryId], references: [id])
 
   @@map("expenses")
@@ -58,6 +58,8 @@ model Category {
   createdAt   DateTime  @default(now()) @map("created_at")
   updatedAt   DateTime  @default(now()) @map("update_at")
   posts       Expense[]
+
+  @@map("categories")
 }
 
 enum Status {
