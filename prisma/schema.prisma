@@ -9,3 +9,63 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id         String   @id @default(uuid())
+  name       String
+  cpf        Int
+  cnpj       Int?
+  email      String   @unique
+  password   String
+  phone      Int?
+  street     String?
+  number     Int?
+  complement String?
+  ativo      Boolean  @default(true)
+  role       Role     @default(USER)
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @default(now()) @map("update_at")
+
+  expenses Expense[]
+
+  @@map("users")
+}
+
+model Expense {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  valor       BigInt
+  status      Status   @default(PENDENTE)
+  ativo       Boolean  @default(true)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @default(now()) @map("update_at")
+
+  userId String @map("user_id")
+  user   User   @relation(fields: [userId], references: [id])
+
+  categoryId Int
+  Category   Category? @relation(fields: [categoryId], references: [id])
+
+  @@map("expenses")
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String?
+  ativo       Boolean   @default(true)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @default(now()) @map("update_at")
+  posts       Expense[]
+}
+
+enum Status {
+  PAGO
+  PENDENTE
+}
+
+enum Role {
+  ADMIN
+  USER
+}
