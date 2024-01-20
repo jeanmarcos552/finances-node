@@ -1,36 +1,22 @@
 import { Body, Controller, Delete, Get, HttpCode, Ip, Param, Post, Put, Query } from '@nestjs/common';
 import { AppService } from './app.service';
 import { Person } from './model/person-dto';
+import { PrismaService } from './prisma/prisma.service';
 
-@Controller('/person')
+@Controller('/api')
 export class AppController {
-  constructor(private readonly appService: AppService) { }
+  constructor(
+    private prisma: PrismaService,
+  ) { }
 
-  @Post()
-  @HttpCode(200)
-  create(@Body() body: Person) {
-    return this.appService.create(body);
+
+
+  @Get('/hello')
+  findAll() {
+    return this.prisma.category.findFirst();
   }
 
-  @Get()
-  findAll(@Query() request: Object): Object {
-    return this.appService.filter(request);
-  }
 
-  @Get('/:id')
-  findOne(@Param('id') id: string): string {
-    return this.appService.findOne(id);
-  }
-
-  @Put('/:id')
-  update(@Param('id') id: string, @Body() body: Person): string {
-    return `usuario ${id} - ${body.nome}`
-  }
-
-  @Delete('/:id')
-  delete(@Param('id') id: string): string {
-    return `usuario ${id} foi deletado!`
-  }
 
 }
 
